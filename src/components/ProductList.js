@@ -26,9 +26,24 @@ const ProductList=()=>{
         setProducts(result);
     }
     console.warn("products",products);
+    const searchHandle=async(event)=>{
+        let key=event.target.value;
+        if(key){
+            let result=await fetch(`http://localhost:5000/search/${key}`);
+            result= await result.json();
+            if(result){
+                setProducts(result);
+            }
+        }else{
+            getProducts();
+        }
+      
+    }
+
     return(
         <div className='product-list'>
         <h1>Product List</h1>
+        <input className='search-product-box' onChange={searchHandle} type="text" placeholder='Search Product'/>
         <ul>
             <li>S No.</li>
             <li>Name</li>
@@ -37,6 +52,7 @@ const ProductList=()=>{
             <li>Operation</li>
         </ul>
       {
+        products.length>0?
         products.map((item,index)=>
         <ul key={item._id}>
         <li>{index+1}</li>
@@ -46,8 +62,10 @@ const ProductList=()=>{
         <li><button onClick={()=>deleteProduct(item._id)}>Delete</button></li>
         <Link to={"/update/10"+item._id}>Update</Link>
     </ul>
-        )
+        ):
+        <h1>No Result Found</h1>
       }
+
          </div>
     )
 }
